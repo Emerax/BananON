@@ -14,7 +14,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
 
     void Update() {
         if (Keyboard.current.spaceKey.wasPressedThisFrame) {
-            photonView.RPC(nameof(SayHiRPC), RpcTarget.Others);
+            photonView.RPC(nameof(SayHiRPC), RpcTarget.Others, PhotonNetwork.LocalPlayer);
         }
     }
 
