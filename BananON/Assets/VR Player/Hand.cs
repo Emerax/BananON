@@ -23,6 +23,8 @@ public class Hand : MonoBehaviour{
 
     public Animator handAnim;
 
+    private float thumbValue = 0;
+
     private void Awake() {
         //handAnim should be set up manually to be sure it links to correct child with animator.
         if (!handAnim) {
@@ -36,6 +38,7 @@ public class Hand : MonoBehaviour{
     }
 
     private void Update() {
+        //thumbValue = Mathf.MoveTowards(thumbValue, ThumbSqueeze ? 1 : 0, 0.3f);
         handAnim.SetFloat("Thumb Squeeze", ThumbSqueeze);
         handAnim.SetFloat("Pointer Squeeze", PointerSqueeze);
         handAnim.SetFloat("Fingers Squeeze", FingerSqueeze);

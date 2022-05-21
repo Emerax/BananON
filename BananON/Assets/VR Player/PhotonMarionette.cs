@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Unity.XR.Oculus;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.XR;
@@ -14,6 +15,7 @@ public class PhotonMarionette : MonoBehaviour {
     private ControllerType type;
 
     private InputDevice device;
+    private Hand hand;
 
     public ControllerType Type {
         get => type;
@@ -25,12 +27,12 @@ public class PhotonMarionette : MonoBehaviour {
             case ControllerType.HEAD:
                 break;
             case ControllerType.RIGHT:
+                hand = GetComponentInChildren<Hand>();
                 node = XRNode.RightHand;
                 break;
             case ControllerType.LEFT:
+                hand = GetComponentInChildren<Hand>();
                 node = XRNode.LeftHand;
-                break;
-            default:
                 break;
         }
 
@@ -40,6 +42,19 @@ public class PhotonMarionette : MonoBehaviour {
                 Debug.LogError("RUH ROW SCOOBS.");
             }
         } 
+    }
+
+    void Update() {
+        if (device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue)) {
+            hand.PointerSqueeze = 1 - triggerValue;
+        }
+        if (device.TryGetFeatureValue(CommonUsages.grip, out float gripValue)) {
+            hand.FingerSqueeze = 1 - gripValue;
+        }
+        if(device.TryGetFeatureValue(CommonUsages.thumbTouch, out float thumbTouch)) {
+            Debug.LogError("Does this ever happen? Value is " + thumbTouch);
+            hand.ThumbSqueeze = thumbTouch;
+        }
     }
 
     public void Init(int ownerActorNumber) {
