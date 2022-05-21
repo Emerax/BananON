@@ -11,11 +11,13 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
     public BananaSpawner spawnerObject;
     private float delay = 2f;
     private Rigidbody rigBody;
+    private PhotonView view;
 
     void Awake() {
         meshy = GetComponentInChildren<MeshRenderer>();
         spawnerObject = BananaSpawner.Instance;
         rigBody = GetComponent<Rigidbody>();
+        view = GetComponent<PhotonView>();
     }
 
 
@@ -35,7 +37,9 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
         Vector3 spawnPos = transform.position;
         Quaternion spawnRotation = transform.rotation;
         PhotonNetwork.Instantiate("BananaProjectile", spawnPos, spawnRotation);
-        PhotonNetwork.Destroy(gameObject);
+        if(view.IsMine) {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 
     private void OnDestroy() {
