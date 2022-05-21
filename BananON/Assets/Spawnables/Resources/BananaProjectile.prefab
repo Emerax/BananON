@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9175898206520596802}
   - component: {fileID: 6083739021646230490}
   - component: {fileID: 6257821210996871667}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BananaProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,6 +159,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Nudes
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 94d47375f05ec6648a1dacb5d1f1a2b5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94d47375f05ec6648a1dacb5d1f1a2b5, type: 3}

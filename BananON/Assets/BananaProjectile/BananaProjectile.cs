@@ -13,7 +13,6 @@ public class BananaProjectile : MonoBehaviour, IPunInstantiateMagicCallback {
     void Awake() {
         photonView = GetComponent<PhotonView>();
         lifeTime = startingLifeTime;
-        Debug.Log("Projectile yeah");
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {

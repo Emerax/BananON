@@ -39,8 +39,11 @@ public class BananaSpawner : MonoBehaviour {
     private void SpawnBanana() {
         int location = Random.Range(0, 8);
         Vector3 spawnPos = bananaPositions[location].transform.position;
-        spawnPos += new Vector3(Random.Range(0f, 1f), 0, Random.Range(0f, 1f));
-        Quaternion spawnRotation = Quaternion.Euler(0, Random.Range(0f, 360f), -90f);
+        float bananaRotation = Random.Range(0f, 360f);
+        float xShift = Mathf.Cos(bananaRotation)*0.3f;
+        float yShift = Mathf.Sin(bananaRotation)*0.3f;
+        spawnPos += new Vector3(xShift, 0, yShift);
+        Quaternion spawnRotation = Quaternion.Euler(0, bananaRotation, -90f);
         object[] spawnParams = { Random.Range(minGrowthRate, maxGrowthRate)};
         GameObject bananaObj = PhotonNetwork.Instantiate("Banana", spawnPos, spawnRotation, data:spawnParams);
         Banana banana = bananaObj.GetComponent<Banana>();
