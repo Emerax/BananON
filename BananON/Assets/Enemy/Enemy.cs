@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float attackCooldown = 2;
     private float attackTimer;
+
     private NavMeshAgent agent;
     private Animator anim;
 
@@ -46,8 +47,11 @@ public class Enemy : MonoBehaviour
 
     }
 
-    public void GetHit() {
+    public void GetHit(Vector3 launchDir, float launchStrength) {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+
+        object[] spawnParams = { launchDir * launchStrength };
+        PhotonNetwork.Instantiate("Capybara Ded", transform.position, transform.rotation, data: spawnParams);
 
         PhotonNetwork.Destroy(gameObject);
     }

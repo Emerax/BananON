@@ -39,6 +39,7 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
         PhotonNetwork.Instantiate("BananaProjectile", spawnPos, spawnRotation);
         if(view.IsMine) {
             PhotonNetwork.Destroy(gameObject);
+            SpawnPeel();
         }
     }
 
@@ -53,6 +54,21 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
 
     private void OnDestroy() {
         spawnerObject.UnregisterBanana(this);
+    }
+
+    public bool SqueezeBanana(float yourBoat) {
+        if (yourBoat > 0.9f) {
+            FireBanana();
+            return true;
+        }
+        return false;
+    }
+
+    private void SpawnPeel() {
+        Vector3 spawnPos = transform.position;
+        spawnPos += Vector3.up * 0.5f;
+        Quaternion spawnRotation = transform.rotation;
+        PhotonNetwork.Instantiate("Peel", spawnPos, spawnRotation);
     }
 
     // Update is called once per frame

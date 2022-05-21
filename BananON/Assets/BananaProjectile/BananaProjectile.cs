@@ -32,7 +32,8 @@ public class BananaProjectile : MonoBehaviour, IPunInstantiateMagicCallback {
         if(collision.CompareTag("Enemy")) {
             Enemy enemy = collision.GetComponent<Enemy>();
             if(enemy != null) {
-                enemy.GetHit();
+
+                enemy.GetHit(transform.forward, absoluteVelocity);
                 PhotonNetwork.Destroy(gameObject);
             }
         }
