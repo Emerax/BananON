@@ -1,9 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BananaSpawner : MonoBehaviour
-{
+public class BananaSpawner : MonoBehaviour {
     public GameObject bananaPrefab;
     public List<GameObject> bananaPositions;
     public int bananaLimit;
@@ -11,16 +11,15 @@ public class BananaSpawner : MonoBehaviour
     public Color omogenBanana;
     public Color sexyBanana;
 
-    
+
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         spawnedBananas = new List<Banana>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
+        if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
         //Every now and then rather than always pretty much
         if(spawnedBananas.Count < bananaLimit) {
             SpawnBanana();
@@ -34,9 +33,10 @@ public class BananaSpawner : MonoBehaviour
     private void SpawnBanana() {
         Debug.Log("Spawning a banana!");
         int location = Random.Range(0, 8);
-        GameObject bananaObj = Instantiate(bananaPrefab, bananaPositions[location].transform);
-        bananaObj.transform.Translate(Random.Range(0f, 1f), -1, Random.Range(0f, 1f),Space.World);
-        bananaObj.transform.Rotate(0,Random.Range(0f,360f),-90f) ;
+        Vector3 spawnPos = bananaPositions[location].transform.position;
+        spawnPos += new Vector3(Random.Range(0f, 1f), -1, Random.Range(0f, 1f));
+        Quaternion spawnRotation = Quaternion.Euler(0, Random.Range(0f, 360f), -90f);
+        GameObject bananaObj = PhotonNetwork.Instantiate("Banana", spawnPos, spawnRotation);
         Banana banana = bananaObj.GetComponent<Banana>();
         banana.spawnerObject = this;
         spawnedBananas.Add(banana);
