@@ -116,7 +116,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  driver: {fileID: 0}
 --- !u!114 &1966673530539910312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,7 +277,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
-  driver: {fileID: 0}
 --- !u!114 &1117781437667145311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,7 +430,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  driver: {fileID: 0}
 --- !u!114 &7318283957772301730
 MonoBehaviour:
   m_ObjectHideFlags: 0
