@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,8 @@ public class Banana : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+
         if(isGrowing) {
             scale += growthRate * Time.deltaTime;
             transform.localScale = new Vector3(scale, scale, scale);
@@ -36,7 +39,6 @@ public class Banana : MonoBehaviour
                 GetComponent<Rigidbody>().useGravity = true;
                 meshy.material.color = spawnerObject.sexyBanana;
                 isGrowing = false;
-                Debug.Log("THis is a fully grown banan");
             }
         }
 

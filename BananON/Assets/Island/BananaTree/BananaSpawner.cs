@@ -20,7 +20,7 @@ public class BananaSpawner : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
-        //Every now and then rather than always pretty much
+
         if(spawnedBananas.Count < bananaLimit) {
             SpawnBanana();
         }
@@ -31,7 +31,6 @@ public class BananaSpawner : MonoBehaviour {
     }
 
     private void SpawnBanana() {
-        Debug.Log("Spawning a banana!");
         int location = Random.Range(0, 8);
         Vector3 spawnPos = bananaPositions[location].transform.position;
         spawnPos += new Vector3(Random.Range(0f, 1f), -1, Random.Range(0f, 1f));
