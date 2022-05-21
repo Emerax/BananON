@@ -32,16 +32,18 @@ public class Enemy : MonoBehaviour
 
             if(attackTimer >= 0)
                 attackTimer -= Time.deltaTime;
-            float distance = Vector3.Distance(
-                transform.position, target.transform.position);
+            Vector3 toTarget = target.transform.position - transform.position;
+            float distance = toTarget.magnitude;
             if(attackTimer <= 0 && distance < attackDistance) {
                 attackTimer = attackCooldown;
                 anim.SetTrigger("Attack");
             }
+
         }
         else {
             Debug.LogWarning("No Players for enemy to target");
         }
+
     }
 
     public void GetHit() {
