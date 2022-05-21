@@ -6,30 +6,48 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField]
+    private float attackDistance = 2;
+    [SerializeField]
+    private float attackCooldown = 2;
+    private float attackTimer;
     private NavMeshAgent agent;
+    private Animator anim;
 
     private VRPlayer target;
 
     void Start() {
         agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
         UpdateTargets();
+
+        attackTimer = 0;
     }
 
     private void Update() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
-        if(target)
+        if(target) {
             agent.SetDestination(target.transform.position);
-        else
+
+            if(attackTimer >= 0)
+                attackTimer -= Time.deltaTime;
+            float distance = Vector3.Distance(
+                transform.position, target.transform.position);
+            if(attackTimer <= 0 && distance < attackDistance) {
+                attackTimer = attackCooldown;
+                anim.SetTrigger("Attack");
+            }
+        }
+        else {
             Debug.LogWarning("No Players for enemy to target");
+        }
     }
 
-    private void OnTriggerEnter(Collider other) {
+    public void GetHit() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
-        if (other.CompareTag("Banana")) {
-            PhotonNetwork.Destroy(gameObject);
-        }
+        PhotonNetwork.Destroy(gameObject);
     }
 
     public void UpdateTargets() {
