@@ -9,10 +9,13 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
     private MeshRenderer meshy;
     public bool isGrowing;
     public BananaSpawner spawnerObject;
+    private float delay = 2f;
+    private Rigidbody rigBody;
 
     void Awake() {
         meshy = GetComponentInChildren<MeshRenderer>();
         spawnerObject = BananaSpawner.Instance;
+        rigBody = GetComponent<Rigidbody>();
     }
 
 
@@ -28,6 +31,13 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
         meshy.material.color = spawnerObject.unripeBanana;
     }
 
+    public void FireBanana() {
+        Vector3 spawnPos = transform.position;
+        Quaternion spawnRotation = transform.rotation;
+        PhotonNetwork.Instantiate("BananaProjectile", spawnPos, spawnRotation);
+        PhotonNetwork.Destroy(gameObject);
+    }
+
     private void OnDestroy() {
         spawnerObject.UnregisterBanana(this);
     }
@@ -39,11 +49,18 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
             transform.localScale = new Vector3(scale, scale, scale);
             meshy.material.color = Color.Lerp(spawnerObject.unripeBanana, spawnerObject.ripeBanana, scale);
             if(scale > 1) {
-                GetComponent<Rigidbody>().useGravity = true;
+                rigBody.isKinematic = false;
+                rigBody.useGravity = true;
                 meshy.material.color = spawnerObject.ripeBanana;
                 isGrowing = false;
             }
         }
-
+        //Testing code for firing bananas
+        else {
+            delay -= Time.deltaTime;
+            if(delay < 0) {
+                FireBanana();
+            }
+        }
     }
 }
