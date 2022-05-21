@@ -8,7 +8,7 @@ using UnityEngine;
 /// 0 means closed, 1 means open.
 /// </summary>
 public class Hand : MonoBehaviour{
-    public float ThumbSqueeze {
+    public bool ThumbSqueeze {
         get;
         set;
     }
@@ -38,8 +38,8 @@ public class Hand : MonoBehaviour{
     }
 
     private void Update() {
-        //thumbValue = Mathf.MoveTowards(thumbValue, ThumbSqueeze ? 1 : 0, 0.3f);
-        handAnim.SetFloat("Thumb Squeeze", ThumbSqueeze);
+        thumbValue = Mathf.MoveTowards(thumbValue, ThumbSqueeze ? 1 : 0, 0.3f);
+        handAnim.SetFloat("Thumb Squeeze", thumbValue);
         handAnim.SetFloat("Pointer Squeeze", PointerSqueeze);
         handAnim.SetFloat("Fingers Squeeze", FingerSqueeze);
     }

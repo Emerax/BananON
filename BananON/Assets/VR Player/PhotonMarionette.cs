@@ -36,37 +36,38 @@ public class PhotonMarionette : MonoBehaviour {
                 break;
         }
 
-        if (node != XRNode.CenterEye) {
+        if(node != XRNode.CenterEye) {
             device = InputDevices.GetDeviceAtXRNode(node);
-            if (device == null) {
+            if(device == null) {
                 Debug.LogError("RUH ROW SCOOBS.");
             }
-        } 
+        }
     }
 
     void Update() {
-        if (device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue)) {
+        if(device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue)) {
             hand.PointerSqueeze = 1 - triggerValue;
         }
-        if (device.TryGetFeatureValue(CommonUsages.grip, out float gripValue)) {
+        if(device.TryGetFeatureValue(CommonUsages.grip, out float gripValue)) {
             hand.FingerSqueeze = 1 - gripValue;
         }
-        if(device.TryGetFeatureValue(CommonUsages.thumbTouch, out float thumbTouch)) {
-            Debug.LogError("Does this ever happen? Value is " + thumbTouch);
-            hand.ThumbSqueeze = thumbTouch;
-        }
+        device.TryGetFeatureValue(CommonUsages.primary2DAxisTouch, out bool primaryAxisTouched);
+        device.TryGetFeatureValue(CommonUsages.secondary2DAxisTouch, out bool secondaryAxisTouched);
+        device.TryGetFeatureValue(CommonUsages.primaryTouch, out bool primaryTouched);
+        device.TryGetFeatureValue(CommonUsages.secondaryTouch, out bool secondaryTouched);
+        hand.ThumbSqueeze = primaryAxisTouched || secondaryAxisTouched || primaryTouched || secondaryTouched;
     }
 
     public void Init(int ownerActorNumber) {
         if(ownerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber) {
             Destroy(GetComponent<TrackedPoseDriver>());
-            if (type == ControllerType.HEAD) {
+            if(type == ControllerType.HEAD) {
                 Destroy(GetComponent<Camera>());
                 Destroy(GetComponent<TrackedPoseDriver>());
             }
         }
         else {
-            if (type == ControllerType.HEAD) {
+            if(type == ControllerType.HEAD) {
                 Destroy(transform.Find("HeadVisuals").gameObject);
             }
         }
