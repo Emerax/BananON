@@ -1,7 +1,4 @@
 using Photon.Pun;
-using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -24,6 +21,11 @@ public class PhotonMarionette : MonoBehaviour {
             Destroy(GetComponent<TrackedPoseDriver>());
             if (type == ControllerType.HEAD) {
                 Destroy(transform.Find("Camera Offset").gameObject);
+            }
+        }
+        else {
+            if (type == ControllerType.HEAD) {
+                Destroy(transform.Find("HeadVisuals").gameObject);
             }
         }
     }

@@ -11,6 +11,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     [SerializeField]
     private float spawnDistance = 5;
     private static readonly string ROOM_NAME = "THE_ISLAND";
+    private static readonly float GROUND_LEVEL = 1f;
 
     void Start() {
         PhotonNetwork.ConnectUsingSettings();
@@ -53,11 +54,11 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
 
     private void SpawnVRPlayer() {
         Vector3 spawnPoint = Random.onUnitSphere;
-        spawnPoint.y = 1.2f;
+        spawnPoint.y = GROUND_LEVEL;
         spawnPoint.x *= spawnDistance;
         spawnPoint.z *= spawnDistance;
         object[] spawnParams = { PhotonNetwork.LocalPlayer.ActorNumber };
-        PhotonNetwork.Instantiate("VRPlayer", spawnPoint, Quaternion.LookRotation(spawnPoint, Vector3.up), data: spawnParams);
+        PhotonNetwork.Instantiate("VRPlayer", spawnPoint, Quaternion.LookRotation(spawnPoint - new Vector3(0, GROUND_LEVEL, 0)), data: spawnParams);
     }
 
     private void SpawnSpectator() {

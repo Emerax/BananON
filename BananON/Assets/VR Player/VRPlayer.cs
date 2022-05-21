@@ -1,6 +1,7 @@
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     private Dictionary<PhotonMarionette.ControllerType, PhotonMarionette> controllers = new Dictionary<PhotonMarionette.ControllerType, PhotonMarionette>();
@@ -16,6 +17,5 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
             controllers[marionette.Type] = marionette;
             marionette.Init((int)spawnParams[0]);
         }
-
     }
 }
