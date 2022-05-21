@@ -434,7 +434,6 @@ MonoBehaviour:
   target: {fileID: 102427402}
   spawnCooldown: 3
   spawnRadius: 30
-  spawnHeight: 0
 --- !u!4 &1866572835
 Transform:
   m_ObjectHideFlags: 0
