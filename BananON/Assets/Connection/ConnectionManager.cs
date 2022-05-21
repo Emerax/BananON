@@ -1,13 +1,9 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class ConnectionManager : MonoBehaviourPunCallbacks {
-    [SerializeField]
-    private VRPlayer playerPrefab;
     [SerializeField]
     private float spawnDistance = 5;
     private static readonly string ROOM_NAME = "THE_ISLAND";
@@ -28,8 +24,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     }
 
     public override void OnJoinedRoom() {
-        Debug.LogError($"Joined room {PhotonNetwork.CurrentRoom.Name} as {(PhotonNetwork.IsMasterClient ? "host" : "client")}");
-#if UNITY_ANDROID
+#if ENABLE_VR
         SpawnVRPlayer();
 #else
         SpawnSpectator();
