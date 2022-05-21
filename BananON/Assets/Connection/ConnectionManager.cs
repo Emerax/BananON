@@ -6,6 +6,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class ConnectionManager : MonoBehaviourPunCallbacks {
+    [SerializeField]
+    private VRPlayer playerPrefab;
+    [SerializeField]
+    private float spawnDistance = 5;
     private static readonly string ROOM_NAME = "THE_ISLAND";
 
     void Start() {
@@ -13,7 +17,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     }
 
     void Update() {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame) {
+        if(Keyboard.current.spaceKey.wasPressedThisFrame) {
             photonView.RPC(nameof(SayHiRPC), RpcTarget.Others, PhotonNetwork.LocalPlayer);
         }
     }
@@ -24,10 +28,10 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
 
     public override void OnJoinedRoom() {
         Debug.LogError($"Joined room {PhotonNetwork.CurrentRoom.Name} as {(PhotonNetwork.IsMasterClient ? "host" : "client")}");
-#if UNITY_EDITOR
-        //Create spectator
-//#else //un-comment this
-        //Create player
+#if UNITY_ANDROID
+        SpawnVRPlayer();
+#else
+        SpawnSpectator();
 #endif
     }
 
@@ -40,11 +44,24 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message) {
-        switch (returnCode) {
+        switch(returnCode) {
             default:
                 Debug.LogError($"Failed to create room with code {returnCode} and message {message}");
                 break;
         }
+    }
+
+    private void SpawnVRPlayer() {
+        Vector3 spawnPoint = Random.onUnitSphere;
+        spawnPoint.y = 1.2f;
+        spawnPoint.x *= spawnDistance;
+        spawnPoint.z *= spawnDistance;
+        object[] spawnParams = { PhotonNetwork.LocalPlayer.ActorNumber };
+        PhotonNetwork.Instantiate("VRPlayer", spawnPoint, Quaternion.LookRotation(spawnPoint, Vector3.up), data: spawnParams);
+    }
+
+    private void SpawnSpectator() {
+
     }
 
     private RoomOptions GetRoomOptions() {
@@ -58,7 +75,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     }
 
     [PunRPC]
-    private void SayHiRPC(Player sender) {
+    private void SayHiRPC(VRPlayer sender) {
         Debug.LogError($"Player {sender} says hi!");
     }
 }
