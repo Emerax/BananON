@@ -42,6 +42,15 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
         }
     }
 
+    public void OnGraspBegin() {
+        view.TransferOwnership(PhotonNetwork.LocalPlayer);
+        rigBody.isKinematic = true;
+    }
+
+    public void OnGraspEnd() {
+        rigBody.isKinematic = false;
+    }
+
     private void OnDestroy() {
         spawnerObject.UnregisterBanana(this);
     }
@@ -59,12 +68,12 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
                 isGrowing = false;
             }
         }
-        //Testing code for firing bananas
-        else {
-            delay -= Time.deltaTime;
-            if(delay < 0) {
-                FireBanana();
-            }
-        }
+        ////Testing code for firing bananas
+        //else {
+        //    delay -= Time.deltaTime;
+        //    if(delay < 0) {
+        //        FireBanana();
+        //    }
+        //}
     }
 }
