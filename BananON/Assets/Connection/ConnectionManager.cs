@@ -8,6 +8,8 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     private float spawnDistance = 5;
     private static readonly string ROOM_NAME = "THE_ISLAND";
     private static readonly float GROUND_LEVEL = 1f;
+    [SerializeField]
+    private SpectatorCamera spectatorPrefab;
 
     void Start() {
         PhotonNetwork.ConnectUsingSettings();
@@ -26,7 +28,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     public override void OnJoinedRoom() {
 #if ENABLE_VR
         SpawnVRPlayer();
-#else
+#elif UNITY_EDITOR
         SpawnSpectator();
 #endif
     }
@@ -57,7 +59,7 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     }
 
     private void SpawnSpectator() {
-
+        Instantiate(spectatorPrefab);
     }
 
     private RoomOptions GetRoomOptions() {
