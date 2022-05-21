@@ -9,6 +9,7 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
     private MeshRenderer meshy;
     public bool isGrowing;
     public BananaSpawner spawnerObject;
+    private float delay = 2f;
 
     void Awake() {
         meshy = GetComponentInChildren<MeshRenderer>();
@@ -28,6 +29,13 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
         meshy.material.color = spawnerObject.unripeBanana;
     }
 
+    public void FireBanana() {
+        Vector3 spawnPos = transform.position;
+        Quaternion spawnRotation = transform.rotation;
+        PhotonNetwork.Instantiate("BananaProjectile", spawnPos, spawnRotation);
+        PhotonNetwork.Destroy(gameObject);
+    }
+
     private void OnDestroy() {
         spawnerObject.UnregisterBanana(this);
     }
@@ -44,6 +52,11 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
                 isGrowing = false;
             }
         }
-
+        else {
+            delay -= Time.deltaTime;
+            if(delay < 0) {
+                FireBanana();
+            }
+        }
     }
 }
