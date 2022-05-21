@@ -19,9 +19,6 @@ public class PhotonMarionette : MonoBehaviour {
 
     private InputDevice device;
     private Hand hand;
-    [SerializeField]
-    private TrackedPoseDriver driver;
-
     public ControllerType Type {
         get => type;
     }
@@ -79,7 +76,6 @@ public class PhotonMarionette : MonoBehaviour {
         }
         else {
             //This object someone else's
-            driver.enabled = false;
             if(type == ControllerType.HEAD) {
                 Destroy(GetComponent<Camera>());
             }
