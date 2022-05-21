@@ -1,20 +1,31 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Banana : MonoBehaviour
-{
+public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
     private float scale;
+    private float growthRate;
     private MeshRenderer meshy;
+    public bool isGrowing;
     public BananaSpawner spawnerObject;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        scale = 0;
-        transform.localScale = new Vector3(0,0,0);
+    void Awake() {
         meshy = GetComponentInChildren<MeshRenderer>();
-        meshy.material.color = spawnerObject.omogenBanana;
+        spawnerObject = BananaSpawner.Instance;
+    }
+
+
+    // Start is called before the first frame update
+    void Start() {
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info) {
+        scale = 0;
+        growthRate = (float)info.photonView.InstantiationData[0];
+        isGrowing = true;
+        transform.localScale = new Vector3(0, 0, 0);
+        meshy.material.color = spawnerObject.unripeBanana;
     }
 
     private void OnDestroy() {
@@ -22,18 +33,16 @@ public class Banana : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(scale < 1) {
-            scale += 0.5f * Time.deltaTime;
+    void Update() {
+        if(isGrowing) {
+            scale += growthRate * Time.deltaTime;
             transform.localScale = new Vector3(scale, scale, scale);
-            meshy.material.color = Color.Lerp(spawnerObject.omogenBanana, spawnerObject.sexyBanana, scale);
-        }
-        else {
-            spawnerObject.UnregisterBanana(this);
-            GetComponent<Rigidbody>().useGravity = true;
-            meshy.material.color = spawnerObject.sexyBanana;
-            Debug.Log("THis is a fully grown banan");
+            meshy.material.color = Color.Lerp(spawnerObject.unripeBanana, spawnerObject.ripeBanana, scale);
+            if(scale > 1) {
+                GetComponent<Rigidbody>().useGravity = true;
+                meshy.material.color = spawnerObject.ripeBanana;
+                isGrowing = false;
+            }
         }
 
     }
