@@ -127,8 +127,8 @@ MonoBehaviour:
   - {fileID: 8834747540391833365}
   - {fileID: 2636035456254191689}
   bananaLimit: 20
-  omogenBanana: {r: 0.5715804, g: 0.93333334, b: 0.34117642, a: 0}
-  sexyBanana: {r: 0.95089954, g: 0.990566, b: 0.13705935, a: 0}
+  unripeBanana: {r: 0.09775851, g: 0.9528302, b: 0.09588221, a: 0}
+  ripeBanana: {r: 0.78880435, g: 0.8490566, b: 0.14951934, a: 0}
 --- !u!1 &2422429811103714570
 GameObject:
   m_ObjectHideFlags: 0
