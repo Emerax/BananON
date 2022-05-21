@@ -16,6 +16,7 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         foreach(PhotonMarionette marionette in GetComponentsInChildren<PhotonMarionette>()) {
             controllers[marionette.Type] = marionette;
             marionette.Init((int)spawnParams[0]);
+
         }
     }
 }
