@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Banana : MonoBehaviour
+public class Banana : MonoBehaviour, IPunInstantiateMagicCallback
 {
     private float scale;
     private float growthRate;
@@ -13,12 +14,16 @@ public class Banana : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info) {
         scale = 0;
         isGrowing = true;
-        growthRate = Random.Range(0.02f, 0.05f);
-        transform.localScale = new Vector3(0,0,0);
+        transform.localScale = new Vector3(0, 0, 0);
         meshy = GetComponentInChildren<MeshRenderer>();
         meshy.material.color = spawnerObject.omogenBanana;
+        growthRate = (float)info.photonView.InstantiationData[0];
     }
 
     private void OnDestroy() {
@@ -36,7 +41,6 @@ public class Banana : MonoBehaviour
                 GetComponent<Rigidbody>().useGravity = true;
                 meshy.material.color = spawnerObject.sexyBanana;
                 isGrowing = false;
-                Debug.Log("THis is a fully grown banan");
             }
         }
 
