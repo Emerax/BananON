@@ -15,8 +15,6 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField]
     private float spawnRadius = 20;
-    [SerializeField]
-    private float spawnHeight = 0;
 
     private void Awake() {
         spawnTimer = spawnCooldown;

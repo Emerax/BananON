@@ -124,7 +124,13 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 1491f74cf0c03754b9f70e9224ed7457, type: 2}
+--- !u!4 &102427402 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4185170523623843166, guid: c64aa9fe3942d654088dac42aace96ab,
+    type: 3}
+  m_PrefabInstance: {fileID: 2050023996}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,6 +400,56 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1866572833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1866572835}
+  - component: {fileID: 1866572834}
+  m_Layer: 0
+  m_Name: EnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1866572834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866572833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9299aff6ecc7da45a8e5eaa4ed30edd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 7854440481005975785, guid: a6b363866f655fe4fbd15da95cb8f053,
+    type: 3}
+  target: {fileID: 102427402}
+  spawnCooldown: 3
+  spawnRadius: 30
+  spawnHeight: 0
+--- !u!4 &1866572835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866572833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2050023996
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -475,6 +531,12 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2063272390560463221, guid: aa3ea1766e57b4646b7c1730b50a1ece,
+        type: 3}
+      propertyPath: spectatorPrefab
+      value: 
+      objectReference: {fileID: 7958818063863024128, guid: a3eb6d33d0d18cd44b4b3abdd296fad8,
+        type: 3}
     - target: {fileID: 6869227300748811034, guid: aa3ea1766e57b4646b7c1730b50a1ece,
         type: 3}
       propertyPath: m_Name
