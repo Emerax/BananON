@@ -26,7 +26,6 @@ public class Peel : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision) {
-        Debug.Log("Collide");
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
         if(collision.collider.tag == "Enemy" ){

@@ -1,9 +1,10 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
+public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonViewOwnerChange {
     private float scale;
     private float growthRate;
     private MeshRenderer meshy;
@@ -49,7 +50,7 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
     }
 
     public void OnGraspEnd() {
-        rigBody.isKinematic = false;
+    rigBody.isKinematic = false;
     }
 
     private void OnDestroy() {
@@ -84,12 +85,10 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
                 isGrowing = false;
             }
         }
-        ////Testing code for firing bananas
-        //else {
-        //    delay -= Time.deltaTime;
-        //    if(delay < 0) {
-        //        FireBanana();
-        //    }
-        //}
+    }
+
+    //TODO: FIX THIS, STOP BANANA GRABBING ABUSE!
+    public void OnOwnerChange(Player newOwner, Player previousOwner) {
+        throw new System.NotImplementedException();
     }
 }

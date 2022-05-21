@@ -153,7 +153,9 @@ public class PhotonMarionette : MonoBehaviour {
 
     private void KeepGrasping(float squeeze) {
         if (heldBanana != null) {
-            //Pass squeeze to heldBanana.
+            if (heldBanana.SqueezeBanana(squeeze)) {
+                heldBanana = null;
+            }
         }
     }
 
