@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,15 +22,15 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void Update() {
+        if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+
         spawnTimer -= Time.deltaTime;
         if (spawnTimer < 0) {
             spawnTimer = spawnCooldown;
 
             Vector3 spawnPos = transform.position + Vector3.forward * spawnRadius;
             spawnPos = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnPos;
-            Enemy spawnedEnemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
-
-            spawnedEnemy.goal = target;
+            PhotonNetwork.Instantiate("Enemy Cylinder", spawnPos, Quaternion.identity);
         }
     }
 }
