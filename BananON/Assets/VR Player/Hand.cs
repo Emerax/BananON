@@ -46,7 +46,6 @@ public class Hand : MonoBehaviour, IPunObservable {
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-        Debug.LogError("Sending hand animation data");
         if (stream.IsWriting) {
             stream.SendNext(ThumbSqueeze);
             stream.SendNext(PointerSqueeze);
