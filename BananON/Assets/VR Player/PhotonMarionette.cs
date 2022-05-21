@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System.Collections;
 using Unity.XR.Oculus;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -14,15 +15,23 @@ public class PhotonMarionette : MonoBehaviour {
     [SerializeField]
     private ControllerType type;
 
+    private PhotonView photonView;
+
     private InputDevice device;
     private Hand hand;
+    [SerializeField]
+    private TrackedPoseDriver driver;
 
     public ControllerType Type {
         get => type;
     }
 
+    void Awake() {
+        photonView = GetComponent<PhotonView>();
+    }
+
     void Start() {
-        XRNode node = XRNode.CenterEye;
+        XRNode node = XRNode.Head;
         switch(type) {
             case ControllerType.HEAD:
                 break;
@@ -45,6 +54,59 @@ public class PhotonMarionette : MonoBehaviour {
     }
 
     void Update() {
+        if(!photonView.IsMine) {
+            return;
+        }
+        if(type != ControllerType.HEAD) {
+            UpdateDeviceLocalPose();
+            UpdateHandInput();
+        }
+    }
+
+    private void OnPreRender() {
+        if (type == ControllerType.HEAD) {
+            UpdateDeviceLocalPose();
+        }
+    }
+
+    public void Init(bool localObject) {
+        if(localObject) {
+            //This object owned by this client.
+            if(type == ControllerType.HEAD) {
+                //Destroy local head so it does not obscure camera.
+                Destroy(transform.Find("HeadVisuals").gameObject);
+            }
+        }
+        else {
+            //This object someone else's
+            driver.enabled = false;
+            if(type == ControllerType.HEAD) {
+                Destroy(GetComponent<Camera>());
+            }
+        }
+    }
+
+    private void UpdateDeviceLocalPose() {
+        if (!photonView.IsMine) {
+            return;
+        }
+        bool posOK = device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 position);
+        bool rotOK = device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation);
+        if (posOK && rotOK) {
+            transform.localPosition = position;
+            transform.localRotation = rotation;
+            //transform.SetPositionAndRotation(position, rotation);
+        }
+        else {
+            Debug.LogError($"Failed to get pose for device {name}. Got Position: {posOK}, rotation: {rotOK}");
+        }
+    }
+
+    private void UpdateHandInput() {
+        if(!photonView.IsMine) {
+            return;
+        }
+
         if(device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue)) {
             hand.PointerSqueeze = 1 - triggerValue;
         }
@@ -56,20 +118,5 @@ public class PhotonMarionette : MonoBehaviour {
         device.TryGetFeatureValue(CommonUsages.primaryTouch, out bool primaryTouched);
         device.TryGetFeatureValue(CommonUsages.secondaryTouch, out bool secondaryTouched);
         hand.ThumbSqueeze = primaryAxisTouched || secondaryAxisTouched || primaryTouched || secondaryTouched;
-    }
-
-    public void Init(int ownerActorNumber) {
-        if(ownerActorNumber != PhotonNetwork.LocalPlayer.ActorNumber) {
-            Destroy(GetComponent<TrackedPoseDriver>());
-            if(type == ControllerType.HEAD) {
-                Destroy(GetComponent<Camera>());
-                Destroy(GetComponent<TrackedPoseDriver>());
-            }
-        }
-        else {
-            if(type == ControllerType.HEAD) {
-                Destroy(transform.Find("HeadVisuals").gameObject);
-            }
-        }
     }
 }

@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine;
 /// Squeeze floats control different fingers on a 0-1 scale.
 /// 0 means closed, 1 means open.
 /// </summary>
-public class Hand : MonoBehaviour{
+public class Hand : MonoBehaviour, IPunObservable {
     public bool ThumbSqueeze {
         get;
         set;
@@ -38,9 +39,22 @@ public class Hand : MonoBehaviour{
     }
 
     private void Update() {
-        thumbValue = Mathf.MoveTowards(thumbValue, ThumbSqueeze ? 1 : 0, 0.3f);
+        thumbValue = Mathf.MoveTowards(thumbValue, !ThumbSqueeze ? 1 : 0, 0.3f);
         handAnim.SetFloat("Thumb Squeeze", thumbValue);
         handAnim.SetFloat("Pointer Squeeze", PointerSqueeze);
         handAnim.SetFloat("Fingers Squeeze", FingerSqueeze);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+        if (stream.IsWriting) {
+            stream.SendNext(ThumbSqueeze);
+            stream.SendNext(PointerSqueeze);
+            stream.SendNext(FingerSqueeze);
+        }
+        else {
+            ThumbSqueeze = (bool)stream.ReceiveNext();
+            PointerSqueeze = (float)stream.ReceiveNext();
+            FingerSqueeze = (float)stream.ReceiveNext();
+        }
     }
 }

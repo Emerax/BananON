@@ -13,9 +13,11 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
         object[] spawnParams = info.photonView.InstantiationData;
+        int ownerNumber = (int)spawnParams[0];
+        Debug.LogError($"Player instantiated for actor number {ownerNumber}, own number is {PhotonNetwork.LocalPlayer.ActorNumber}");
         foreach(PhotonMarionette marionette in GetComponentsInChildren<PhotonMarionette>()) {
             controllers[marionette.Type] = marionette;
-            marionette.Init((int)spawnParams[0]);
+            marionette.Init(ownerNumber == PhotonNetwork.LocalPlayer.ActorNumber);
 
         }
     }
