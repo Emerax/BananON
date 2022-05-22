@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Peel : MonoBehaviour
-{
+public class Peel : MonoBehaviour {
     [SerializeField]
     private float lifeTime = 5;
     private float lifeTimeTimer;
@@ -20,15 +19,14 @@ public class Peel : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start() {
+
     }
 
     void OnCollisionEnter(Collision collision) {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
-        if(collision.collider.tag == "Enemy" ){
+        if(collision.collider.tag == "Enemy") {
             Enemy enemy = collision.collider.GetComponent<Enemy>();
             if(enemy != null) {
 
@@ -36,17 +34,18 @@ public class Peel : MonoBehaviour
                 enemy.GetHit(launchDir, launchStrength);
                 //PhotonNetwork.Destroy(gameObject);
                 GetComponent<Rigidbody>().AddForce(
-                    Quaternion.Euler(0,180,0) * launchDir * launchStrength, ForceMode.Impulse);
+                    Quaternion.Euler(0, 180, 0) * launchDir * launchStrength, ForceMode.Impulse);
             }
         }
     }
 
     // Update is called once per frame
     void Update() {
-        if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
-        lifeTimeTimer += Time.deltaTime;
-        if(lifeTimeTimer > lifeTime) {
-            PhotonNetwork.Destroy(gameObject);
+        if(view.IsMine) {
+            lifeTimeTimer += Time.deltaTime;
+            if(lifeTimeTimer > lifeTime) {
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
     }
 }
