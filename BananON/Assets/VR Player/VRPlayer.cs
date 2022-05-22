@@ -31,13 +31,15 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     private void FixedUpdate() {
         if(isDead) return;
 
-        Vector3 bodyPos = hurtBox.position;
-        Vector3 headPos = head.position;
+        if(hurtBox && head) {
+            Vector3 bodyPos = hurtBox.position;
+            Vector3 headPos = head.position;
 
-        bodyPos.x = headPos.x;
-        bodyPos.z = headPos.z;
+            bodyPos.x = headPos.x;
+            bodyPos.z = headPos.z;
 
-        hurtBox.position = bodyPos;
+            hurtBox.position = bodyPos;
+        }
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
