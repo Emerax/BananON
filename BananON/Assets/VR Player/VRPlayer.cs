@@ -6,9 +6,33 @@ using UnityEngine.InputSystem.XR;
 public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     private Dictionary<PhotonMarionette.ControllerType, PhotonMarionette> controllers = new Dictionary<PhotonMarionette.ControllerType, PhotonMarionette>();
 
-    // Update is called once per frame
+    private float hitPoints;
+    public float maxHitPoints = 10;
+    private bool isDead;
+
+    public Transform head;
+    public Transform hurtBox;
+    private Vector3 startOffset;
+
+    private void Awake() {
+        hitPoints = maxHitPoints;
+        isDead = false;
+
+        startOffset = hurtBox.position - head.position;
+    }
+
     void Update() {
 
+    }
+
+    private void FixedUpdate() {
+        Vector3 bodyPos = hurtBox.position;
+        Vector3 headPos = head.position;
+
+        bodyPos.x = headPos.x;
+        bodyPos.z = headPos.z;
+
+        hurtBox.position = bodyPos;
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
