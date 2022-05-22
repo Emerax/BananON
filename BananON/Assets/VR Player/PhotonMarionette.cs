@@ -28,6 +28,10 @@ public class PhotonMarionette : MonoBehaviour {
     private bool grasping = false;
     private Banana heldBanana = null;
 
+    public AudioClip audioShoot;
+    private AudioSource audioSource;
+
+
     void Awake() {
         photonView = GetComponent<PhotonView>();
     }
@@ -155,6 +159,7 @@ public class PhotonMarionette : MonoBehaviour {
         if (heldBanana != null) {
             if (heldBanana.SqueezeBanana(squeeze)) {
                 heldBanana = null;
+                audioSource.PlayOneShot(audioShoot);
             }
         }
     }
