@@ -15,12 +15,16 @@ public class Peel : MonoBehaviour {
     private float launchUpAngle = 25;
 
     private void Awake() {
+        view = GetComponent<PhotonView>();
         lifeTimeTimer = 0;
     }
 
     // Start is called before the first frame update
-    void Start() {
-
+    void Start()
+    {
+        if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+        Vector3 launchDir = Quaternion.Euler(launchUpAngle, Random.Range(0, 360), 0) * Vector3.forward;
+        GetComponent<Rigidbody>().AddForce(Quaternion.Euler(0, 180, 0) * launchDir * launchStrength*0.2f, ForceMode.Impulse);
     }
 
     void OnCollisionEnter(Collision collision) {
