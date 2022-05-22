@@ -46,7 +46,10 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         foreach(PhotonMarionette marionette in GetComponentsInChildren<PhotonMarionette>()) {
             controllers[marionette.Type] = marionette;
             marionette.Init(ownerNumber == PhotonNetwork.LocalPlayer.ActorNumber);
+        }
 
+        if (PhotonNetwork.IsMasterClient) {
+            FindObjectOfType<StartResetButton>().RegisterHost(controllers[PhotonMarionette.ControllerType.HEAD]);
         }
     }
 

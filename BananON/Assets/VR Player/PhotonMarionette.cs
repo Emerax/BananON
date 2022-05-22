@@ -106,7 +106,6 @@ public class PhotonMarionette : MonoBehaviour {
         if(posOK && rotOK) {
             transform.localPosition = position;
             transform.localRotation = rotation;
-            //transform.SetPositionAndRotation(position, rotation);
         }
         else {
 
@@ -159,6 +158,11 @@ public class PhotonMarionette : MonoBehaviour {
                     bt.localPosition = bananaGraspOffset;
                     bt.localRotation = Quaternion.Euler(bananaGraspRotation);
                     return;
+                }
+
+                StartResetButton button = col.attachedRigidbody.GetComponent<StartResetButton>();
+                if (button != null) {
+                    button.StartGame();
                 }
             }
         }

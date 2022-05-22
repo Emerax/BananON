@@ -6,10 +6,15 @@ using UnityEngine.InputSystem;
 public class ConnectionManager : MonoBehaviourPunCallbacks {
     [SerializeField]
     private float spawnDistance = 5;
+    private Vector3 spawnerPos;
     private static readonly string ROOM_NAME = "THE_ISLAND";
     private static readonly float GROUND_LEVEL = 1f;
     [SerializeField]
     private SpectatorCamera spectatorPrefab;
+
+    void Awake() {
+        spawnerPos = FindObjectOfType<BananaSpawner>().transform.position;
+    }
 
     void Start() {
         PhotonNetwork.ConnectUsingSettings();
@@ -50,10 +55,9 @@ public class ConnectionManager : MonoBehaviourPunCallbacks {
     }
 
     private void SpawnVRPlayer() {
-        Vector3 spawnPoint = Random.onUnitSphere;
+        Vector2 spawnDirection = Random.insideUnitCircle.normalized;
+        Vector3 spawnPoint = spawnerPos + new Vector3(spawnDirection.x, 0, spawnDirection.y) * spawnDistance;
         spawnPoint.y = GROUND_LEVEL;
-        spawnPoint.x *= spawnDistance;
-        spawnPoint.z *= spawnDistance;
         object[] spawnParams = { PhotonNetwork.LocalPlayer.ActorNumber };
         PhotonNetwork.Instantiate("VRPlayer", spawnPoint, Quaternion.LookRotation(spawnPoint - new Vector3(0, GROUND_LEVEL, 0)), data: spawnParams);
     }
