@@ -10,6 +10,8 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     public float maxHitPoints = 10;
     private bool isDead;
 
+    public GameObject ghostHead;
+    public GameObject livingBody;
     public Transform head;
     public Transform hurtBox;
     private Vector3 startOffset;
@@ -19,6 +21,7 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         isDead = false;
 
         startOffset = hurtBox.position - head.position;
+        ghostHead.SetActive(false);
     }
 
     void Update() {
@@ -26,6 +29,8 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     }
 
     private void FixedUpdate() {
+        if(isDead) return;
+
         Vector3 bodyPos = hurtBox.position;
         Vector3 headPos = head.position;
 
@@ -52,6 +57,10 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         hitPoints -= dmg;
         if(hitPoints <= 0) {
             isDead = true;
+            if(ghostHead)
+               ghostHead.SetActive(true);
+            if(livingBody)
+                livingBody.SetActive(false);
         }
     }
 
