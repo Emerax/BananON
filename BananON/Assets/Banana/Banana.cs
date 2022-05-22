@@ -14,6 +14,9 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
     private Rigidbody rigBody;
     private PhotonView view;
     private PhotonMarionette localHolder;
+    [SerializeField]
+    private float startingTimeToLive = 20;
+    private float timeToLive;
 
     public AudioClip audioGroundThud;
     public Vector2 thudVolumeVariation = new Vector2(0.5f, 0.75f);
@@ -25,6 +28,7 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
         rigBody = GetComponent<Rigidbody>();
         view = GetComponent<PhotonView>();
         audioSource = GetComponent<AudioSource>();
+        timeToLive = startingTimeToLive;
     }
 
 
@@ -109,6 +113,12 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
                 rigBody.useGravity = true;
                 meshy.material.color = spawnerObject.ripeBanana;
                 isGrowing = false;
+            }
+        }
+        else {
+            timeToLive -= Time.deltaTime;
+            if(timeToLive < 0 && view.IsMine) {
+                PhotonNetwork.Destroy(gameObject);
             }
         }
     }
