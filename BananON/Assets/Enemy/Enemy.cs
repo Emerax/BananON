@@ -98,7 +98,7 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
         float minDist = float.MaxValue;
         for(int i = 0; i < players.Length; i++) {
             if(!players[i]) continue;
-            if(players[i].IsDead()) continue;
+            if(players[i].IsDead) continue;
 
             float currentDist = Vector3.Distance(
                 transform.position, players[i].transform.position);
