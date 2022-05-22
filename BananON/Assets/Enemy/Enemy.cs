@@ -107,4 +107,8 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
         //}
 
     }
+
+    public void ResetGame() {
+        PhotonNetwork.Destroy(gameObject);
+    }
 }
