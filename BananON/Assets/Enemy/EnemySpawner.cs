@@ -27,6 +27,8 @@ public class EnemySpawner : MonoBehaviour
     private void Update() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
+        if(!hasStarted) return;
+
         spawnTimer -= Time.deltaTime;
         if (spawnTimer < 0) {
             spawnTimer = spawnCooldown;
@@ -46,5 +48,11 @@ public class EnemySpawner : MonoBehaviour
         }
 
         spawnTimer = spawnCooldown;
+
+        hasStarted = true;
+    }
+
+    public void EndGame() {
+        hasStarted = false;
     }
 }

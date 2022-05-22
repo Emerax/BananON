@@ -14,8 +14,11 @@ public class BananaSpawner : MonoBehaviour {
     public Color unripeBanana;
     public Color ripeBanana;
 
+    private bool hasStarted;
+
     void Awake() {
         if(Instance == null) Instance = this;
+        hasStarted = false;
     }
 
     // Start is called before the first frame update
@@ -26,6 +29,8 @@ public class BananaSpawner : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+
+        if(!hasStarted) return;
 
         if(spawnedBananas.Count < bananaLimit) {
             SpawnBanana();
@@ -53,5 +58,11 @@ public class BananaSpawner : MonoBehaviour {
             Destroy(spawnedBananas[i].gameObject);
         }
         spawnedBananas.Clear();
+
+        hasStarted = true;
+    }
+
+    public void EndGame() {
+        hasStarted = false;
     }
 }
