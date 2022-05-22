@@ -50,7 +50,8 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
             marionette.Init(ownerNumber == PhotonNetwork.LocalPlayer.ActorNumber);
         }
 
-        if (PhotonNetwork.IsMasterClient) {
+        if(PhotonNetwork.IsMasterClient) {
+            Debug.LogError("Am master!");
             FindObjectOfType<StartResetButton>().RegisterHost(controllers[PhotonMarionette.ControllerType.HEAD]);
         }
     }
@@ -60,7 +61,7 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         if(hitPoints <= 0) {
             isDead = true;
             if(ghostHead)
-               ghostHead.SetActive(true);
+                ghostHead.SetActive(true);
             if(livingBody)
                 livingBody.SetActive(false);
         }
