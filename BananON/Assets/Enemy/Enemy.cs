@@ -48,10 +48,12 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
                 attackTimer = attackCooldown;
                 anim.SetTrigger("Attack");
             }
-
         }
         else {
-            Debug.LogWarning("No Players for enemy to target");
+            UpdateTargets();
+            if(!target) {
+                Debug.LogWarning("No Players for enemy to target");
+            }
         }
 
     }
