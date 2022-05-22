@@ -106,8 +106,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGrowing: 0
   spawnerObject: {fileID: 0}
-  audioGroundThud: {fileID: 8300000, guid: 7bb856adb8d216944b2dce852e9063c5, type: 3}
-  thudVolumeVariation: {x: 0.9, y: 1.1}
+  audioGroundThud: {fileID: 8300000, guid: da6aa105e0d5dfd41a05ba349707597f, type: 3}
+  thudVolumeVariation: {x: 0.48, y: 0.7}
 --- !u!82 &1496676193130353156
 AudioSource:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 76
+  Priority: 63
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
