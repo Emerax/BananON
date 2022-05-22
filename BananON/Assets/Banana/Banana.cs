@@ -13,11 +13,16 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
     private Rigidbody rigBody;
     private PhotonView view;
 
+    public AudioClip audioGroundThud;
+    public Vector2 thudVolumeVariation = new Vector2(0.5f, 0.75f);
+    private AudioSource audioSource;
+
     void Awake() {
         meshy = GetComponentInChildren<MeshRenderer>();
         spawnerObject = BananaSpawner.Instance;
         rigBody = GetComponent<Rigidbody>();
         view = GetComponent<PhotonView>();
+        audioSource = GetComponent<AudioSource>();
     }
 
 
@@ -82,5 +87,9 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback {
                 FireBanana();
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        audioSource.PlayOneShot(audioGroundThud, Random.Range(thudVolumeVariation.x, thudVolumeVariation.y));
     }
 }

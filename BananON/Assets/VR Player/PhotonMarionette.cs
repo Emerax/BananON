@@ -94,7 +94,7 @@ public class PhotonMarionette : MonoBehaviour {
             //transform.SetPositionAndRotation(position, rotation);
         }
         else {
-            Debug.LogError($"Failed to get pose for device {name}. Got Position: {posOK}, rotation: {rotOK}");
+
         }
     }
 
