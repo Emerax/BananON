@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
 
     private AudioSource audioSource;
 
+    private bool noPlayersLeft;
+
     void Start() {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
@@ -29,6 +31,7 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
         UpdateTargets();
 
         attackTimer = 0;
+        noPlayersLeft = false;
     }
 
     private void Update() {
@@ -78,6 +81,7 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
         float minDist = float.MaxValue;
         for(int i = 0; i < players.Length; i++) {
             if(!players[i]) continue;
+            if(players[i].IsDead()) continue;
 
             float currentDist = Vector3.Distance(
                 transform.position, players[i].transform.position);
@@ -85,6 +89,11 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
                 minDist = currentDist;
                 target = players[i];
             }
+        }
+
+        if(!target) {
+            noPlayersLeft = true;
+            //TODO: Celebrate
         }
     }
 
