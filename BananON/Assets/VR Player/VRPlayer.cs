@@ -6,8 +6,16 @@ using UnityEngine.InputSystem.XR;
 public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     private Dictionary<PhotonMarionette.ControllerType, PhotonMarionette> controllers = new Dictionary<PhotonMarionette.ControllerType, PhotonMarionette>();
 
+    private PhotonView photonView;
     private float hitPoints;
     public float maxHitPoints = 10;
+    public bool IsDead {
+        get => isDead;
+        private set {
+            photonView.RPC(nameof(AmDeadRPC), RpcTarget.All, value);
+        }
+    }
+
     private bool isDead;
 
     public GameObject ghostHead;
@@ -17,6 +25,7 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     private Vector3 startOffset;
 
     private void Awake() {
+        photonView = GetComponent<PhotonView>();
         hitPoints = maxHitPoints;
         isDead = false;
 
@@ -31,13 +40,15 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
     private void FixedUpdate() {
         if(isDead) return;
 
-        Vector3 bodyPos = hurtBox.position;
-        Vector3 headPos = head.position;
+        if(hurtBox && head) {
+            Vector3 bodyPos = hurtBox.position;
+            Vector3 headPos = head.position;
 
-        bodyPos.x = headPos.x;
-        bodyPos.z = headPos.z;
+            bodyPos.x = headPos.x;
+            bodyPos.z = headPos.z;
 
-        hurtBox.position = bodyPos;
+            hurtBox.position = bodyPos;
+        }
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
@@ -54,10 +65,19 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         }
     }
 
+    public void ResetGame() {
+        IsDead = false;
+        hitPoints = maxHitPoints;
+
+        startOffset = hurtBox.position - head.position;
+        head.gameObject.SetActive(true);
+        ghostHead.SetActive(false);
+    }
+
     public void TakeDamage(float dmg) {
         hitPoints -= dmg;
         if(hitPoints <= 0) {
-            isDead = true;
+            IsDead = true;
             if(ghostHead)
                 ghostHead.SetActive(true);
             if(livingBody)
@@ -65,14 +85,17 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         }
     }
 
-    public bool IsDead() {
-        return isDead;
-    }
-
     public float GetNormalizedHP() {
         return hitPoints / maxHitPoints;
     }
     public float GetCurrentHP() {
         return hitPoints;
+    }
+
+    [PunRPC]
+    private void AmDeadRPC(bool amDead) {
+        isDead = amDead;
+        ghostHead.SetActive(amDead);
+        head.gameObject.SetActive(!amDead);
     }
 }
