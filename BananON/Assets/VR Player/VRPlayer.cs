@@ -45,16 +45,21 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
         }
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if(other.CompareTag("Hitbox")) {
-            hitPoints--;
-            if(hitPoints <= 0) {
-                isDead = true;
-            }
+    public void TakeDamage(float dmg) {
+        hitPoints -= dmg;
+        if(hitPoints <= 0) {
+            isDead = true;
         }
     }
 
     public bool IsDead() {
         return isDead;
+    }
+
+    public float GetNormalizedHP() {
+        return hitPoints / maxHitPoints;
+    }
+    public float GetCurrentHP() {
+        return hitPoints;
     }
 }
