@@ -1,6 +1,4 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BananaProjectile : MonoBehaviour, IPunInstantiateMagicCallback {
@@ -9,21 +7,15 @@ public class BananaProjectile : MonoBehaviour, IPunInstantiateMagicCallback {
     private PhotonView photonView;
     public float startingLifeTime;
     public float absoluteVelocity;
+    private Rigidbody rBody;
 
     void Awake() {
+        rBody = GetComponent<Rigidbody>();
         photonView = GetComponent<PhotonView>();
         lifeTime = startingLifeTime;
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
-
-    }
-
-    private 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     private void OnTriggerEnter(Collider collision) {
@@ -40,13 +32,11 @@ public class BananaProjectile : MonoBehaviour, IPunInstantiateMagicCallback {
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if(photonView.IsMine) {
             lifeTime -= Time.deltaTime;
             if(lifeTime < 0) PhotonNetwork.Destroy(gameObject);
-
-            transform.Translate(transform.forward * absoluteVelocity * Time.deltaTime);
+            rBody.MovePosition(transform.position += absoluteVelocity * Time.deltaTime * transform.forward);
         }
     }
 }

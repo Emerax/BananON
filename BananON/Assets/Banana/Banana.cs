@@ -3,6 +3,8 @@ using Photon.Realtime;
 using UnityEngine;
 
 public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonViewOwnerChange {
+    [SerializeField]
+    private Transform fireTransform;
     private float scale;
     private float growthRate;
     private MeshRenderer meshy;
@@ -57,8 +59,8 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
     }
 
     public void FireBanana() {
-        Vector3 spawnPos = transform.position;
-        Quaternion spawnRotation = transform.rotation;
+        Vector3 spawnPos = fireTransform.position;
+        Quaternion spawnRotation = fireTransform.rotation;
         PhotonNetwork.Instantiate("BananaProjectile", spawnPos, spawnRotation);
         if(view.IsMine) {
             PhotonNetwork.Destroy(gameObject);
