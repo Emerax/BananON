@@ -47,4 +47,11 @@ public class BananaSpawner : MonoBehaviour {
         Banana banana = bananaObj.GetComponent<Banana>();
         spawnedBananas.Add(banana);
     }
+
+    public void ResetGame() {
+        for(int i= 0; i < spawnedBananas.Count; i++) {
+            Destroy(spawnedBananas[i].gameObject);
+        }
+        spawnedBananas.Clear();
+    }
 }
