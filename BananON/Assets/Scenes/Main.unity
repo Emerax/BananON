@@ -533,7 +533,7 @@ PrefabInstance:
     - target: {fileID: 2063272390560463221, guid: aa3ea1766e57b4646b7c1730b50a1ece,
         type: 3}
       propertyPath: spawnDistance
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2063272390560463221, guid: aa3ea1766e57b4646b7c1730b50a1ece,
         type: 3}
