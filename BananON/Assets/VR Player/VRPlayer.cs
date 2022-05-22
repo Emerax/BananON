@@ -59,8 +59,7 @@ public class VRPlayer : MonoBehaviour, IPunInstantiateMagicCallback {
             marionette.Init(ownerNumber == PhotonNetwork.LocalPlayer.ActorNumber);
         }
 
-        if(PhotonNetwork.IsMasterClient) {
-            Debug.LogError("Am master!");
+        if(PhotonNetwork.IsMasterClient && ownerNumber == PhotonNetwork.LocalPlayer.ActorNumber) {
             FindObjectOfType<StartResetButton>().RegisterHost(controllers[PhotonMarionette.ControllerType.HEAD]);
         }
     }
