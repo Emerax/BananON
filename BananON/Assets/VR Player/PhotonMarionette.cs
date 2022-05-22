@@ -14,6 +14,8 @@ public class PhotonMarionette : MonoBehaviour {
 
     [SerializeField]
     private ControllerType type;
+    [SerializeField]
+    private Transform graspParent;
 
     private PhotonView photonView;
 
@@ -22,6 +24,9 @@ public class PhotonMarionette : MonoBehaviour {
     public ControllerType Type {
         get => type;
     }
+
+    private bool grasping = false;
+    private Banana heldBanana = null;
 
     void Awake() {
         photonView = GetComponent<PhotonView>();
@@ -105,14 +110,61 @@ public class PhotonMarionette : MonoBehaviour {
 
         if(device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue)) {
             hand.PointerSqueeze = 1 - triggerValue;
+            if (!grasping && triggerValue > 0.1f) {
+                BeginGrasping();
+            }
+            else if (grasping && triggerValue < 0.1f) {
+                EndGrasping();
+            }
         }
         if(device.TryGetFeatureValue(CommonUsages.grip, out float gripValue)) {
             hand.FingerSqueeze = 1 - gripValue;
+            if (grasping) {
+                KeepGrasping(gripValue);
+            }
         }
         device.TryGetFeatureValue(CommonUsages.primary2DAxisTouch, out bool primaryAxisTouched);
         device.TryGetFeatureValue(CommonUsages.secondary2DAxisTouch, out bool secondaryAxisTouched);
         device.TryGetFeatureValue(CommonUsages.primaryTouch, out bool primaryTouched);
         device.TryGetFeatureValue(CommonUsages.secondaryTouch, out bool secondaryTouched);
         hand.ThumbSqueeze = primaryAxisTouched || secondaryAxisTouched || primaryTouched || secondaryTouched;
+
+        if(heldBanana != null) {
+
+        }
+    }
+
+    private void BeginGrasping() {
+        grasping = true;
+        //Check if close to banana. Grab if yes.
+        foreach (Collider col in Physics.OverlapBox(graspParent.position, Vector3.one)) {
+            if (col.attachedRigidbody != null) {
+                Banana banana = col.attachedRigidbody.GetComponent<Banana>();
+                if (banana != null) {
+                    banana.OnGraspBegin();
+                    heldBanana = banana;
+                    banana.transform.position = graspParent.position;
+                    banana.transform.SetParent(graspParent);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void KeepGrasping(float squeeze) {
+        if (heldBanana != null) {
+            if (heldBanana.SqueezeBanana(squeeze)) {
+                heldBanana = null;
+            }
+        }
+    }
+
+    private void EndGrasping() {
+        grasping = false;
+        //Drop banana.
+        if (heldBanana != null) {
+            heldBanana.OnGraspEnd();
+            heldBanana.transform.SetParent(null);
+        }
     }
 }
