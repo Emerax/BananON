@@ -20,7 +20,15 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
 
     private VRPlayer target;
 
+    public Vector2 volumeVariation = new Vector2(0.5f, 0.75f);
+    public AudioClip[] capyBaraShot;
+    public AudioClip[] capyBaraAttack;
+    public AudioClip[] capyBaraIdle;
+
     private AudioSource audioSource;
+
+    private float idleTime;
+    private Vector2 maxMinIdle = new Vector2(4f, 7f);
 
     private bool noPlayersLeft;
 
@@ -31,10 +39,16 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
         UpdateTargets();
 
         attackTimer = 0;
+        idleTime = Random.Range(maxMinIdle.x, maxMinIdle.y);
         noPlayersLeft = false;
     }
 
     private void Update() {
+        idleTime -= Time.deltaTime;
+        if(idleTime < 0) {
+            audioSource.PlayOneShot(capyBaraIdle[Random.Range(0, capyBaraIdle.Length)], Random.Range(volumeVariation.x, volumeVariation.y));
+            idleTime = Random.Range(maxMinIdle.x, maxMinIdle.y);
+        }
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
         //Hunt player
@@ -50,6 +64,8 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
             if(attackTimer <= 0 && distance < attackDistance) {
                 attackTimer = attackCooldown;
                 anim.SetTrigger("Attack");
+                //Only plays for host?
+                audioSource.PlayOneShot(capyBaraAttack[Random.Range(0, capyBaraAttack.Length)], Random.Range(0.1f, 0.13f));
             }
         }
         else {
@@ -62,6 +78,7 @@ public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
     }
 
     public void GetHit(Vector3 launchDir, float launchStrength) {
+        audioSource.PlayOneShot(capyBaraShot[Random.Range(0,capyBaraShot.Length)], Random.Range(volumeVariation.x, volumeVariation.y));
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
         //When enemies are hit, they die.
