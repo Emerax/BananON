@@ -35,5 +35,7 @@ public class StartResetButton : MonoBehaviourPunCallbacks {
 
     public void StartGame() {
         Debug.Log("Starting game!");
+        FindObjectOfType<BananaSpawner>().ResetGame();
+        FindObjectOfType<EnemySpawner>().ResetGame();
     }
 }

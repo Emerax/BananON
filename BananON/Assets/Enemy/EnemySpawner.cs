@@ -17,12 +17,17 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     private float spawnRadius = 20;
 
+    private bool hasStarted;
+
     private void Awake() {
         spawnTimer = spawnCooldown;
+        hasStarted = false;
     }
 
     private void Update() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+
+        if(!hasStarted) return;
 
         spawnTimer -= Time.deltaTime;
         if (spawnTimer < 0) {
@@ -32,5 +37,22 @@ public class EnemySpawner : MonoBehaviour
             spawnPos = Quaternion.Euler(0, Random.Range(0, 360), 0) * spawnPos;
             PhotonNetwork.Instantiate("Enemy Cylinder", spawnPos, Quaternion.identity);
         }
+    }
+
+    public void ResetGame() {
+        Enemy[] instantiated = FindObjectsOfType<Enemy>();
+        for(int i = 0; i < instantiated.Length; i++) {
+            if(!instantiated[i]) continue;
+
+            PhotonNetwork.Destroy(instantiated[i].gameObject);
+        }
+
+        spawnTimer = spawnCooldown;
+
+        hasStarted = true;
+    }
+
+    public void EndGame() {
+        hasStarted = false;
     }
 }

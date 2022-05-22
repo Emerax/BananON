@@ -139,6 +139,7 @@ MonoBehaviour:
   fireTransform: {fileID: 5851842046928166492}
   isGrowing: 0
   spawnerObject: {fileID: 0}
+  startingTimeToLive: 20
   audioGroundThud: {fileID: 8300000, guid: da6aa105e0d5dfd41a05ba349707597f, type: 3}
   thudVolumeVariation: {x: 0.48, y: 0.7}
 --- !u!82 &1496676193130353156
