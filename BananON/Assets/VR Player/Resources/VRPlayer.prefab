@@ -117,6 +117,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   graspParent: {fileID: 0}
+  bananaGraspOffset: {x: 0, y: 0, z: 0}
+  bananaGraspRotation: {x: 0, y: 0, z: 0}
   audioShoot: {fileID: 0}
 --- !u!114 &1966673530539910312
 MonoBehaviour:
@@ -268,6 +270,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   graspParent: {fileID: 2235748813549225068}
+  bananaGraspOffset: {x: -0.7299995, y: -1.1099997, z: 0.36000013}
+  bananaGraspRotation: {x: 0, y: -270, z: -120}
   audioShoot: {fileID: 8300000, guid: 0a5703498767dd14fac8b58749b5bd61, type: 3}
 --- !u!114 &1117781437667145311
 MonoBehaviour:
@@ -508,6 +512,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   graspParent: {fileID: 5135231963703442368}
+  bananaGraspOffset: {x: 0.72999954, y: -1.1099997, z: 0.36000013}
+  bananaGraspRotation: {x: 0, y: -270, z: -120}
   audioShoot: {fileID: 8300000, guid: 0a5703498767dd14fac8b58749b5bd61, type: 3}
 --- !u!114 &7318283957772301730
 MonoBehaviour:

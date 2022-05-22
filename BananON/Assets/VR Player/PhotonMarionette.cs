@@ -14,6 +14,9 @@ public class PhotonMarionette : MonoBehaviour {
     [SerializeField]
     private Transform graspParent;
 
+    public Vector3 bananaGraspOffset;
+    public Vector3 bananaGraspRotation;
+
     private PhotonView photonView;
 
     private InputDevice device;
@@ -30,6 +33,7 @@ public class PhotonMarionette : MonoBehaviour {
     private Vector3 previousPos;
 
     void Awake() {
+        audioSource = GetComponent<AudioSource>();
         photonView = GetComponent<PhotonView>();
     }
 
@@ -150,8 +154,10 @@ public class PhotonMarionette : MonoBehaviour {
                 if(banana != null) {
                     banana.OnGraspBegin(this);
                     heldBanana = banana;
-                    banana.transform.position = graspParent.position;
-                    banana.transform.SetParent(graspParent);
+                    Transform bt = banana.transform;
+                    bt.SetParent(graspParent);
+                    bt.localPosition = bananaGraspOffset;
+                    bt.localRotation = Quaternion.Euler(bananaGraspRotation);
                     return;
                 }
             }
