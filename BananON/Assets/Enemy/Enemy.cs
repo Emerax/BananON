@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
-{
+/// <summary>
+/// Enemy hunts down nearest player.
+/// When they reach a player... THEY ATTACK!
+/// </summary>
+public class Enemy : MonoBehaviour, IOnPhotonViewPreNetDestroy {
     [SerializeField]
     private float attackDistance = 2;
     [SerializeField]
@@ -17,9 +20,12 @@ public class Enemy : MonoBehaviour
 
     private VRPlayer target;
 
+    private AudioSource audioSource;
+
     void Start() {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         UpdateTargets();
 
         attackTimer = 0;
@@ -28,13 +34,16 @@ public class Enemy : MonoBehaviour
     private void Update() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
+        //Hunt player
         if(target) {
             agent.SetDestination(target.transform.position);
 
+            //Handle attack-behaviour and animation
             if(attackTimer >= 0)
                 attackTimer -= Time.deltaTime;
             Vector3 toTarget = target.transform.position - transform.position;
             float distance = toTarget.magnitude;
+
             if(attackTimer <= 0 && distance < attackDistance) {
                 attackTimer = attackCooldown;
                 anim.SetTrigger("Attack");
@@ -50,11 +59,14 @@ public class Enemy : MonoBehaviour
     public void GetHit(Vector3 launchDir, float launchStrength) {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
 
+        //When enemies are hit, they die.
         object[] spawnParams = { launchDir * launchStrength };
         PhotonNetwork.Instantiate("Capybara Ded", transform.position, transform.rotation, data: spawnParams);
 
         PhotonNetwork.Destroy(gameObject);
     }
+
+   
 
     public void UpdateTargets() {
         if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
@@ -72,5 +84,16 @@ public class Enemy : MonoBehaviour
                 target = players[i];
             }
         }
-    }   
+    }
+
+    public void OnPreNetDestroy(PhotonView rootView) {
+        //Play sound alternative. Not in use currently
+        //if(audioSource && audioDeath) {
+        //    audioSource.PlayOneShot(audioDeath);
+        //}
+        //else {
+        //    Debug.LogWarning("Enemy " + name + " does not have audio clip or audio source set up.");
+        //}
+
+    }
 }

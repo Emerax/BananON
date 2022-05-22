@@ -25,6 +25,8 @@ public class PhotonMarionette : MonoBehaviour {
     private bool grasping = false;
     private Banana heldBanana = null;
 
+    public AudioClip audioShoot;
+    private AudioSource audioSource;
     private Vector3 previousPos;
 
     void Awake() {
@@ -103,7 +105,7 @@ public class PhotonMarionette : MonoBehaviour {
             //transform.SetPositionAndRotation(position, rotation);
         }
         else {
-            Debug.LogError($"Failed to get pose for device {name}. Got Position: {posOK}, rotation: {rotOK}");
+
         }
     }
 
@@ -160,6 +162,7 @@ public class PhotonMarionette : MonoBehaviour {
         if(heldBanana != null) {
             if(heldBanana.SqueezeBanana(squeeze)) {
                 heldBanana = null;
+                audioSource.PlayOneShot(audioShoot);
             }
         }
     }
