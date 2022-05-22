@@ -1,7 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonViewOwnerChange {
@@ -13,6 +11,7 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
     private float delay = 2f;
     private Rigidbody rigBody;
     private PhotonView view;
+    private PhotonMarionette localHolder;
 
     public AudioClip audioGroundThud;
     public Vector2 thudVolumeVariation = new Vector2(0.5f, 0.75f);
@@ -31,12 +30,30 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
     void Start() {
     }
 
+    private void OnEnable() {
+        view.AddCallbackTarget(this);
+    }
+
+    private void OnDisable() {
+        view.RemoveCallbackTarget(this);
+    }
+
+    private void OnDestroy() {
+        spawnerObject.UnregisterBanana(this);
+    }
+
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
         scale = 0;
         growthRate = (float)info.photonView.InstantiationData[0];
         isGrowing = true;
         transform.localScale = new Vector3(0, 0, 0);
         meshy.material.color = spawnerObject.unripeBanana;
+    }
+
+    public void OnOwnerChange(Player newOwner, Player previousOwner) {
+        if (localHolder != null && newOwner != PhotonNetwork.LocalPlayer) {
+
+        }
     }
 
     public void FireBanana() {
@@ -49,21 +66,23 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
         }
     }
 
-    public void OnGraspBegin() {
+    public void OnGraspBegin(PhotonMarionette hand) {
         view.TransferOwnership(PhotonNetwork.LocalPlayer);
+        if (localHolder != null) {
+            localHolder.OnBananaStolen();
+        }
+        localHolder = hand;
         rigBody.isKinematic = true;
     }
 
-    public void OnGraspEnd() {
-    rigBody.isKinematic = false;
-    }
-
-    private void OnDestroy() {
-        spawnerObject.UnregisterBanana(this);
+    public void OnGraspEnd(Vector3 releaseVelocity) {
+        rigBody.isKinematic = false;
+        rigBody.velocity = releaseVelocity;
+        localHolder = null;
     }
 
     public bool SqueezeBanana(float yourBoat) {
-        if (yourBoat > 0.9f) {
+        if(yourBoat > 0.9f) {
             FireBanana();
             return true;
         }
@@ -90,11 +109,6 @@ public class Banana : MonoBehaviour, IPunInstantiateMagicCallback, IOnPhotonView
                 isGrowing = false;
             }
         }
-    }
-
-    //TODO: FIX THIS, STOP BANANA GRABBING ABUSE!
-    public void OnOwnerChange(Player newOwner, Player previousOwner) {
-        throw new System.NotImplementedException();
     }
 
     private void OnCollisionEnter(Collision collision) {

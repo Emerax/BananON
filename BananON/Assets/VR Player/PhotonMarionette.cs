@@ -1,8 +1,5 @@
 using Photon.Pun;
-using System.Collections;
-using Unity.XR.Oculus;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.XR;
 
 public class PhotonMarionette : MonoBehaviour {
@@ -17,6 +14,9 @@ public class PhotonMarionette : MonoBehaviour {
     [SerializeField]
     private Transform graspParent;
 
+    public Vector3 bananaGraspOffset;
+    public Vector3 bananaGraspRotation;
+
     private PhotonView photonView;
 
     private InputDevice device;
@@ -30,9 +30,10 @@ public class PhotonMarionette : MonoBehaviour {
 
     public AudioClip audioShoot;
     private AudioSource audioSource;
-
+    private Vector3 previousPos;
 
     void Awake() {
+        audioSource = GetComponent<AudioSource>();
         photonView = GetComponent<PhotonView>();
     }
 
@@ -67,10 +68,11 @@ public class PhotonMarionette : MonoBehaviour {
             UpdateDeviceLocalPose();
             UpdateHandInput();
         }
+        previousPos = transform.position;
     }
 
     private void OnPreRender() {
-        if (type == ControllerType.HEAD) {
+        if(type == ControllerType.HEAD) {
             UpdateDeviceLocalPose();
         }
     }
@@ -91,13 +93,17 @@ public class PhotonMarionette : MonoBehaviour {
         }
     }
 
+    public void OnBananaStolen() {
+        heldBanana = null;
+    }
+
     private void UpdateDeviceLocalPose() {
-        if (!photonView.IsMine) {
+        if(!photonView.IsMine) {
             return;
         }
         bool posOK = device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 position);
         bool rotOK = device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rotation);
-        if (posOK && rotOK) {
+        if(posOK && rotOK) {
             transform.localPosition = position;
             transform.localRotation = rotation;
             //transform.SetPositionAndRotation(position, rotation);
@@ -114,16 +120,17 @@ public class PhotonMarionette : MonoBehaviour {
 
         if(device.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue)) {
             hand.PointerSqueeze = 1 - triggerValue;
-            if (!grasping && triggerValue > 0.1f) {
+            if(!grasping && triggerValue > 0.1f) {
                 BeginGrasping();
             }
-            else if (grasping && triggerValue < 0.1f) {
-                EndGrasping();
+            else if(grasping && triggerValue < 0.1f) {
+                Vector3 velocity = (transform.position - previousPos) / Time.deltaTime;
+                EndGrasping(velocity);
             }
         }
         if(device.TryGetFeatureValue(CommonUsages.grip, out float gripValue)) {
             hand.FingerSqueeze = 1 - gripValue;
-            if (grasping) {
+            if(grasping) {
                 KeepGrasping(gripValue);
             }
         }
@@ -141,14 +148,16 @@ public class PhotonMarionette : MonoBehaviour {
     private void BeginGrasping() {
         grasping = true;
         //Check if close to banana. Grab if yes.
-        foreach (Collider col in Physics.OverlapBox(graspParent.position, Vector3.one)) {
-            if (col.attachedRigidbody != null) {
+        foreach(Collider col in Physics.OverlapBox(graspParent.position, Vector3.one)) {
+            if(col.attachedRigidbody != null) {
                 Banana banana = col.attachedRigidbody.GetComponent<Banana>();
-                if (banana != null) {
-                    banana.OnGraspBegin();
+                if(banana != null) {
+                    banana.OnGraspBegin(this);
                     heldBanana = banana;
-                    banana.transform.position = graspParent.position;
-                    banana.transform.SetParent(graspParent);
+                    Transform bt = banana.transform;
+                    bt.SetParent(graspParent);
+                    bt.localPosition = bananaGraspOffset;
+                    bt.localRotation = Quaternion.Euler(bananaGraspRotation);
                     return;
                 }
             }
@@ -156,20 +165,20 @@ public class PhotonMarionette : MonoBehaviour {
     }
 
     private void KeepGrasping(float squeeze) {
-        if (heldBanana != null) {
-            if (heldBanana.SqueezeBanana(squeeze)) {
+        if(heldBanana != null) {
+            if(heldBanana.SqueezeBanana(squeeze)) {
                 heldBanana = null;
                 audioSource.PlayOneShot(audioShoot);
             }
         }
     }
 
-    private void EndGrasping() {
+    private void EndGrasping(Vector3 releaseVelocity) {
         grasping = false;
         //Drop banana.
-        if (heldBanana != null) {
-            heldBanana.OnGraspEnd();
+        if(heldBanana != null) {
             heldBanana.transform.SetParent(null);
+            heldBanana.OnGraspEnd(releaseVelocity);
         }
     }
 }
