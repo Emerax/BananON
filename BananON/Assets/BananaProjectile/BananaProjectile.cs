@@ -19,14 +19,14 @@ public class BananaProjectile : MonoBehaviour, IPunInstantiateMagicCallback {
     }
 
     private void OnTriggerEnter(Collider collision) {
-        if(!PhotonNetwork.IsMasterClient && PhotonNetwork.IsConnected) return;
+        if (photonView.IsMine) {
+            if(collision.CompareTag("Enemy")) {
+                Enemy enemy = collision.GetComponent<Enemy>();
+                if(enemy != null) {
 
-        if(collision.CompareTag("Enemy")) {
-            Enemy enemy = collision.GetComponent<Enemy>();
-            if(enemy != null) {
-
-                enemy.GetHit(transform.forward, absoluteVelocity);
-                PhotonNetwork.Destroy(gameObject);
+                    enemy.GetHit(transform.forward, absoluteVelocity);
+                    PhotonNetwork.Destroy(gameObject);
+                }
             }
         }
     }
